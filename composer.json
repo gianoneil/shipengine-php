@@ -1,0 +1,20 @@
+{
+    "name": "goneil/shipengine-php",
+    "description": "ShipEngine for PHP",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Gian Ganarial",
+            "email": "gian.oneil@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "ShipEngine": "src/"
+        }
+    }
+}
