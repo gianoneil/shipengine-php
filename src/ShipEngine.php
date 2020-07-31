@@ -8,4 +8,9 @@ class ShipEngine
     {
         return 'Hello Ship Engine';
     }
+
+    public static function hello()
+    {
+        return 'Hello';
+    }
 }
