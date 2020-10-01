@@ -4,13 +4,18 @@ namespace ShipEngine;
 
 class ShipEngine
 {
-    public static function test()
-    {
-        return 'Hello Ship Engine';
-    }
+    /**
+     * @var string
+     */
+    public static $apiKey;
 
-    public static function hello()
+    /**
+     * Set the API key
+     *
+     * @param string $apiKey
+     */
+    public static function setApiKey(string $apiKey)
     {
-        return 'Hello';
+        self::$apiKey = $apiKey;
     }
 }
