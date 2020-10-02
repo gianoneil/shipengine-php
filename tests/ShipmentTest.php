@@ -2,9 +2,11 @@
 
 use PHPUnit\Framework\TestCase;
 
+\ShipEngine\ShipEngine::setApiKey('TEST_F1CUc3ZlfjwGaHZ9dEmgvOH9WHiVM+IB7zWCiyg8WZ4');
+
 class ShipmentTest extends TestCase
 {
-    public function testCreateShipment(): void
+    public function testCreate(): void
     {
         $request = [
             'shipments' => [

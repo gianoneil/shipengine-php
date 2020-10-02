@@ -12,18 +12,27 @@ abstract class Helpers
     ];
 
     public static $objectTypes = [
-        'Address'   => '\ShipEngine\Address',
-        'Batch'     => '\ShipEngine\Batch',
-        'Carrier'   => '\ShipEngine\Carrier',
-        'Insurance' => '\ShipEngine\Insurance',
-        'Label'     => '\ShipEngine\Label',
-        'Manifest'  => '\ShipEngine\Manifest',
-        'Package'   => '\ShipEngine\Package',
-        'Rate'      => '\ShipEngine\Rate',
-        'Shipment'  => '\ShipEngine\Shipment',
-        'Tag'       => '\ShipEngine\Tag',
-        'Tracking'  => '\ShipEngine\Tracking',
-        'Warehouse' => '\ShipEngine\Warehouse',
+        'Address'          => '\ShipEngine\Address',
+        'Batch'            => '\ShipEngine\Batch',
+        'Carrier'          => '\ShipEngine\Carrier',
+        'Insurance'        => '\ShipEngine\Insurance',
+        'Label'            => '\ShipEngine\Label',
+        'Manifest'         => '\ShipEngine\Manifest',
+        'Package'          => '\ShipEngine\Package',
+        'Rate'             => '\ShipEngine\Rate',
+        'Shipment'         => '\ShipEngine\Shipment',
+        'Tag'              => '\ShipEngine\Tag',
+        'Tracking'         => '\ShipEngine\Tracking',
+        'Warehouse'        => '\ShipEngine\Warehouse',
+    ];
+
+    public static $objectKeys = [
+        'address'          => '\ShipEngine\Address',
+        'ship_to'          => '\ShipEngine\Address',
+        'ship_from'        => '\ShipEngine\Address',
+        'return_to'        => '\ShipEngine\Address',
+        'matched_address'  => '\ShipEngine\Address',
+        'original_address' => '\ShipEngine\Address',
     ];
 
     public static function isList($array)
@@ -62,6 +71,7 @@ abstract class Helpers
     /**
      * @param $response
      * @param string|null $parent
+     * @param string $name
      * @return mixed
      */
     public static function convertToShipEngineObject($response, $parent = null, $name = null)
@@ -72,15 +82,20 @@ abstract class Helpers
         $listTypes = array_combine($listTypes, self::$objectTypes);
 
         if (self::isList($response)) {
-            // response is a list of multiple ShipEngine objects
             $class = null;
             if ($name && array_key_exists($name, $listTypes)) {
                 $class = $listTypes[$name];
             }
 
             return self::convertListToShipEngineObjects($response, $class);
+
         } elseif (is_array($response)) {
-            foreach ($response as $key => $value) {
+            foreach ($response as $key => &$value) {
+                if (array_key_exists($name, self::$objectKeys)) {
+                    $class = self::$objectKeys[$name];
+                    return ShipEngineObject::constructFrom($response, $class);
+                }
+
                 if (substr($key, -3) == '_id') {
                     $class = substr($key, 0, strlen($key) - 3);
                     $class = (self::getClassName($class));
@@ -94,10 +109,15 @@ abstract class Helpers
                     $class = $listTypes[$key];
                     return self::convertListToShipEngineObjects($value, $class);
                 }
+
+                if (array_key_exists($key, self::$objectKeys)) {
+                    $class = self::$objectKeys[$key];
+                    $value = ShipEngineObject::constructFrom($value, $class);
+                }
             }
-        } else {
-            return $response;
         }
+
+        return $response;
     }
 
     public static function convertListToShipEngineObjects($array, $class = null)
