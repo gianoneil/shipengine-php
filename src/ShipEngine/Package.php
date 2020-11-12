@@ -8,4 +8,9 @@ class Package extends ShipEngineResource
     {
         return self::_create(get_class(), $params);
     }
+
+    public static function list(array $params = null)
+    {
+        return self::_list(get_class(), $params);
+    }
 }

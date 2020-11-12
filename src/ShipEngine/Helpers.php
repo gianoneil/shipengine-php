@@ -9,6 +9,8 @@ abstract class Helpers
     public static $listTypes = [
         'packages'  => '\ShipEngine\Package',
         'shipments' => '\ShipEngine\Shipment',
+        'batches'   => '\ShipEngine\Batch',
+        'services'  => '\ShipEngine\Service',
     ];
 
     public static $objectTypes = [
@@ -24,6 +26,7 @@ abstract class Helpers
         'Tag'              => '\ShipEngine\Tag',
         'Tracking'         => '\ShipEngine\Tracking',
         'Warehouse'        => '\ShipEngine\Warehouse',
+        'Service'          => '\ShipEngine\Service',
     ];
 
     public static $objectKeys = [
@@ -76,9 +79,12 @@ abstract class Helpers
      */
     public static function convertToShipEngineObject($response, $parent = null, $name = null)
     {
-        $listTypes = array_map(function($objectName) {
-            return self::pluralize(strtolower($objectName));
-        }, array_keys(self::$objectTypes));
+        $listTypes = array_map(
+            function($objectName) {
+                return self::pluralize(strtolower($objectName));
+            },
+            array_keys(self::$objectTypes)
+        );
         $listTypes = array_combine($listTypes, self::$objectTypes);
 
         if (self::isList($response)) {

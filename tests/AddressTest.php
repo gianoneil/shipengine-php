@@ -1,8 +1,10 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
 use PHPUnit\Framework\TestCase;
 
-\ShipEngine\ShipEngine::setApiKey('TEST_F1CUc3ZlfjwGaHZ9dEmgvOH9WHiVM+IB7zWCiyg8WZ4');
+ShipEngine\ShipEngine::setApiKey('TEST_F1CUc3ZlfjwGaHZ9dEmgvOH9WHiVM+IB7zWCiyg8WZ4');
 
 class AddressTest extends TestCase
 {

@@ -4,6 +4,7 @@ namespace ShipEngine;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\ClientException;
 
 class Requestor
 {
@@ -14,7 +15,7 @@ class Requestor
         $this->_apiKey = $apiKey;
     }
 
-    public static function request(string $method, string $endpoint, array $params)
+    public static function request(string $method, string $endpoint, $params = null)
     {
         $client = new Client(['base_uri' => 'https://api.shipengine.com/v1/']);
         $headers = [
@@ -22,9 +23,20 @@ class Requestor
             'Content-Type' => 'application/json',
         ];
         $request = new Request($method, $endpoint, $headers, json_encode($params));
-        $response = $client->send($request);
-        $response = json_decode($response->getBody(), true);
 
-        return $response;
+        try {
+            $response = $client->send($request);
+            return json_decode($response->getBody(), true);
+        } catch (ClientException $e) {
+            // TODO: error handling
+            $errors = null;
+            if ($e->hasResponse()) {
+                $errors = json_decode($e->getResponse()->getBody(), true);
+            }
+            dump('Error: ' . $e->getCode());
+            dump($errors);
+            dump(debug_backtrace());
+        }
     }
+
 }

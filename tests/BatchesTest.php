@@ -6,11 +6,19 @@ use PHPUnit\Framework\TestCase;
 
 class BatchesTest extends TestCase
 {
-//    public function testList()
-//    {
-//
-//    }
-//
+    public function testCreate(): void
+    {
+
+    }
+
+    public function testList()
+    {
+        $list = ShipEngine\Batch::list();
+
+        $this->assertIsArray($list);
+        $this->assertArrayHasKey('batches', $list);
+    }
+
 //    public function testCreate()
 //    {
 //

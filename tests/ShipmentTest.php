@@ -55,4 +55,9 @@ class ShipmentTest extends TestCase
         $this->assertIsString($shipment->shipment_id);
         $this->assertStringMatchesFormat('se-%i', $shipment->shipment_id);
     }
+
+    public function testList(): void
+    {
+
+    }
 }

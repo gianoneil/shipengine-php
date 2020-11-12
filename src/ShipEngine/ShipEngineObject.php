@@ -25,7 +25,6 @@ class ShipEngineObject
     public static function constructFrom($values, $class = null, $parent = null, $name = null)
     {
         $class = $class ?? get_class();
-
         $object = new $class($values[$class . '_id'] ?? null, $parent, $name);
         $object->refreshFrom($values);
 
@@ -34,8 +33,13 @@ class ShipEngineObject
 
     public function refreshFrom($values, $partial = false)
     {
-        foreach ($values as $key => $value) {
-            $this->_values[$key] = Helpers::convertToShipEngineObject($value, $this, $key);
+        if (is_array($values)) {
+            foreach ($values as $key => $value) {
+                $this->_values[$key] = Helpers::convertToShipEngineObject($value, $this, $key);
+            }
+        } else {
+            $this->_values[] = $values;
         }
+
     }
 }

@@ -2,10 +2,31 @@
 
 namespace ShipEngine;
 
-class Label
+class Label extends ShipEngineResource
 {
+    public static function retrieve($id)
+    {
+        return self::_retrieve(get_class(), $id);
+    }
+
     public static function create($params)
     {
+        return self::_create(get_class(), $params);
+    }
 
+    public static function createFromRate($rate_id, $params = null)
+    {
+        $endpoint = self::endpoint(get_class()) . '/rates/' . $rate_id;
+        $response = Requestor::request('POST', $endpoint, $params);
+
+        return Helpers::convertToShipEngineObject($response);
+    }
+
+    public static function getByExternalShipmentId($external_shipment_id, $params = null)
+    {
+        $endpoint = self::endpoint(get_class()) . '/external_shipment_id/' . $external_shipment_id;
+        $response = Requestor::request('GET', $endpoint, $params);
+
+        return Helpers::convertToShipEngineObject($response);
     }
 }
