@@ -28,14 +28,10 @@ class Requestor
             $response = $client->send($request);
             return json_decode($response->getBody(), true);
         } catch (ClientException $e) {
-            // TODO: error handling
-            $errors = null;
             if ($e->hasResponse()) {
-                $errors = json_decode($e->getResponse()->getBody(), true);
+                throw new \Exception($e->getResponse()->getBody(), $e->getCode());
             }
-            dump('Error: ' . $e->getCode());
-            dump($errors);
-            dump(debug_backtrace());
+            throw new \Exception('ShipEngine: unknown error');
         }
     }
 
