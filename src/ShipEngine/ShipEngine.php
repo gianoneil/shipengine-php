@@ -10,6 +10,11 @@ class ShipEngine
     public static $apiKey;
 
     /**
+     * @var string
+     */
+    public static $mode;
+
+    /**
      * Set the API key
      *
      * @param string $apiKey
