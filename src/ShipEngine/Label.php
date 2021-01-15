@@ -29,4 +29,12 @@ class Label extends ShipEngineResource
 
         return Helpers::convertToShipEngineObject($response);
     }
+
+    public function void()
+    {
+        $endpoint = self::endpoint(get_class()) . '/' . $this->label_id . '/void';
+        $response = Requestor::request('PUT', $endpoint);
+
+        return Helpers::convertToShipEngineObject($response);
+    }
 }

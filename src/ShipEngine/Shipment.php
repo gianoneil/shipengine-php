@@ -46,4 +46,12 @@ class Shipment extends ShipEngineResource
 
         return Helpers::convertToShipEngineObject($response);
     }
+
+    public function cancel()
+    {
+        $endpoint = ShipEngineResource::endpoint(get_class()) . '/' . $this->shipment_id . '/cancel';
+        $response = Requestor::request('PUT', $endpoint);
+
+        return Helpers::convertToShipEngineObject($response);
+    }
 }

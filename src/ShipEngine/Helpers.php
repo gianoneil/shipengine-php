@@ -77,7 +77,7 @@ abstract class Helpers
      * @param string $name
      * @return mixed
      */
-    public static function convertToShipEngineObject($response, $parent = null, $name = null)
+    public static function convertToShipEngineObject($response, $parent = null, $name = null): mixed
     {
         $listTypes = array_map(
             function($objectName) {
@@ -126,7 +126,12 @@ abstract class Helpers
         return $response;
     }
 
-    public static function convertListToShipEngineObjects($array, $class = null)
+    /**
+     * @param $array
+     * @param null $class
+     * @return array
+     */
+    public static function convertListToShipEngineObjects($array, $class = null): array
     {
         $mapped = [];
         foreach ($array as $value) {
