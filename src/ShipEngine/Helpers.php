@@ -77,7 +77,7 @@ abstract class Helpers
      * @param string $name
      * @return mixed
      */
-    public static function convertToShipEngineObject($response, $parent = null, $name = null): mixed
+    public static function convertToShipEngineObject($response, $parent = null, $name = null)
     {
         $listTypes = array_map(
             function($objectName) {
