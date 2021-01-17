@@ -53,4 +53,24 @@ abstract class ShipEngineResource extends ShipEngineObject
 
         return Helpers::convertToShipEngineObject($response);
     }
+
+    public static function list(array $params = null)
+    {
+        return self::_list(get_called_class(), $params);
+    }
+
+    public static function retrieve($id)
+    {
+        return self::_retrieve(get_called_class(), $id);
+    }
+
+    public static function create(array $params = null)
+    {
+        return self::_create(get_called_class(), $params);
+    }
+
+    public static function update($id, array $params = null)
+    {
+        return self::_update(get_called_class(), $id, $params);
+    }
 }
