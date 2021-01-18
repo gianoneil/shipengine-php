@@ -54,4 +54,9 @@ class Shipment extends ShipEngineResource
 
         return Helpers::convertToShipEngineObject($response);
     }
+
+    public static function list(array $params = null)
+    {
+        return self::_list(get_class(), $params);
+    }
 }

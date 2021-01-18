@@ -113,7 +113,7 @@ abstract class Helpers
 
                 if (array_key_exists($key, $listTypes)) {
                     $class = $listTypes[$key];
-                    return self::convertListToShipEngineObjects($value, $class);
+                    $value = self::convertListToShipEngineObjects($value, $class);
                 }
 
                 if (array_key_exists($key, self::$objectKeys)) {
