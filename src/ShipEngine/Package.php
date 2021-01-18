@@ -13,4 +13,9 @@ class Package extends ShipEngineResource
     {
         return self::_list(get_class(), $params);
     }
+
+    public static function retrieve($id)
+    {
+        return self::_retrieve(get_class(), $id);
+    }
 }
