@@ -2,16 +2,8 @@
 
 namespace ShipEngine;
 
-use phpDocumentor\Reflection\Types\Self_;
-
 abstract class Helpers
 {
-    public static $listTypes = [
-        'packages'  => '\ShipEngine\Package',
-        'shipments' => '\ShipEngine\Shipment',
-        'batches'   => '\ShipEngine\Batch',
-        'services'  => '\ShipEngine\Service',
-    ];
 
     public static $objectTypes = [
         'Address'          => '\ShipEngine\Address',
@@ -38,14 +30,23 @@ abstract class Helpers
         'original_address' => '\ShipEngine\Address',
     ];
 
-    public static function isList($array)
+    /**
+     * Check if array is a plausible list of objects
+     *
+     * @param $array
+     * @return bool
+     */
+    public static function isList($array): bool
     {
         if (!is_array($array)) {
             return false;
         }
 
-        foreach (array_keys($array) as $key) {
-            if (!is_numeric($key)) {
+        foreach ($array as $key => $value) {
+            if (
+                !is_numeric($key)
+                || !is_array($value)
+            ) {
                 return false;
             }
         }
@@ -53,7 +54,13 @@ abstract class Helpers
         return true;
     }
 
-    public static function pluralize(string $string)
+    /**
+     * Pluralize a word
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function pluralize(string $string): string
     {
         if (substr($string, -1) !== 's' && substr($string, -1) !== 'h') {
             return "{$string}s";
@@ -62,7 +69,13 @@ abstract class Helpers
         return "{$string}es";
     }
 
-    public static function getClassName($class)
+    /**
+     * Get class name
+     *
+     * @param string $class
+     * @return string
+     */
+    public static function getClassName(string $class): string
     {
         $class = str_replace('_', ' ', $class);
         $class = ucwords($class);
@@ -72,12 +85,11 @@ abstract class Helpers
     }
 
     /**
-     * @param $response
-     * @param string|null $parent
-     * @param string $name
-     * @return mixed
+     * Get plausible "keys" of object arrays
+     *
+     * @return array
      */
-    public static function convertToShipEngineObject($response, $parent = null, $name = null)
+    private static function getListTypes(): array
     {
         $listTypes = array_map(
             function($objectName) {
@@ -85,7 +97,21 @@ abstract class Helpers
             },
             array_keys(self::$objectTypes)
         );
-        $listTypes = array_combine($listTypes, self::$objectTypes);
+
+        return array_combine($listTypes, self::$objectTypes);
+    }
+
+    /**
+     * Convert response to ShipEngine object
+     *
+     * @param $response
+     * @param string|null $parent
+     * @param string $name
+     * @return mixed
+     */
+    public static function convertToShipEngineObject($response, $parent = null, $name = null)
+    {
+        $listTypes = self::getListTypes();
 
         if (self::isList($response)) {
             $class = null;
@@ -96,12 +122,17 @@ abstract class Helpers
             return self::convertListToShipEngineObjects($response, $class);
 
         } elseif (is_array($response)) {
-            foreach ($response as $key => &$value) {
-                if (array_key_exists($name, self::$objectKeys)) {
-                    $class = self::$objectKeys[$name];
-                    return ShipEngineObject::constructFrom($response, $class);
-                }
 
+            // if name is specified and is one of known objects; transform the response into its corresponding object
+            if (array_key_exists($name, self::$objectKeys)) {
+                $class = self::$objectKeys[$name];
+                return ShipEngineObject::constructFrom($response, $class);
+            }
+
+            // now try to figure out what kind of object the response should be
+            foreach ($response as $key => &$value) {
+
+                // if we encounter an ID, identify the class and convert the response
                 if (substr($key, -3) == '_id') {
                     $class = substr($key, 0, strlen($key) - 3);
                     $class = (self::getClassName($class));
@@ -111,12 +142,13 @@ abstract class Helpers
                     }
                 }
 
+                // if key is one of known list or object types
                 if (array_key_exists($key, $listTypes)) {
+                    // key is one of known list types, convert value into an array of corresponding objects
                     $class = $listTypes[$key];
                     $value = self::convertListToShipEngineObjects($value, $class);
-                }
-
-                if (array_key_exists($key, self::$objectKeys)) {
+                } elseif (array_key_exists($key, self::$objectKeys)) {
+                    // key is one of known object types, convert value into corresponding object
                     $class = self::$objectKeys[$key];
                     $value = ShipEngineObject::constructFrom($value, $class);
                 }
@@ -127,11 +159,13 @@ abstract class Helpers
     }
 
     /**
-     * @param $array
+     * Convert each member of an array to an object
+     *
+     * @param array $array
      * @param null $class
      * @return array
      */
-    public static function convertListToShipEngineObjects($array, $class = null): array
+    public static function convertListToShipEngineObjects(array $array, $class = null): array
     {
         $mapped = [];
         foreach ($array as $value) {
